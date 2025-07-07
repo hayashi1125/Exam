@@ -4,6 +4,23 @@
 <%@include file="../header.html" %>
 <%@include file="menu.jsp" %>
 
+<style>
+button {
+	display: inline-block;
+	border: none;
+	border-radius: 5px;
+	padding: 7px 9px;
+	margin: 5px;
+	background-color: #add8e6;
+	text-align: center;
+	text-decoration: none;
+	front-size: 15px;
+	cursor: pointer;
+
+}
+
+</style>
+
 <div class="content">
   <h2 class="menu-title">学生管理一覧</h2>
 

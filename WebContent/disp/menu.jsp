@@ -46,13 +46,13 @@
       </li>
       <div style="margin-bottom: 15px; text-align: left;">成績管理</div>
       <li style="margin-bottom: 15px; text-align: left; padding-left: 30px;">
-        <a href="<%= request.getContextPath() %>/seiseki/seiseki_insert.jsp">成績登録</a>
+        <a href="<%= request.getContextPath() %>/action/gradeinsert">成績登録</a>
       </li>
       <li style="margin-bottom: 15px; text-align: left; padding-left: 30px;">
         <a href="<%= request.getContextPath() %>/seiseki/seiseki_search.jsp">成績参照</a>
       </li>
       <li style="margin-bottom: 15px; text-align: left;">
-        <a href="<%= request.getContextPath() %>/kamoku/kamoku_list.jsp">科目管理</a>
+        <a href="<%= request.getContextPath() %>/action/kamoku_list">科目管理</a>
       </li>
     </ul>
   </div>

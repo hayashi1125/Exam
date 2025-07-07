@@ -17,14 +17,10 @@ public class FrontController extends HttpServlet {
 	) throws ServletException, IOException {
 		PrintWriter out=response.getWriter();
 		try {
-			String path = request.getServletPath().substring(1);
-			String name = path.replace(".a", "A").replace('/', '.');
-
-			// ここで action. パッケージ名を付ける（絶対に必要）
-			String className = "action." + name;
-
-			Action action = (Action)Class.forName(className).getDeclaredConstructor().newInstance();
-
+			String path=request.getServletPath().substring(1);
+			String name=path.replace(".a", "A").replace('/', '.');
+			Action action=(Action)Class.forName(name).
+				getDeclaredConstructor().newInstance();
 			String url=action.execute(request, response);
 			request.getRequestDispatcher(url).
 				forward(request, response);

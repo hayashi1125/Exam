@@ -17,7 +17,7 @@
     <ul class="card score">
       <div style="margin-bottom: 15px;">成績管理</div>
       <li style="margin-bottom: 15px;">
-        <a href="<%= request.getContextPath() %>/seiseki/seiseki_insert.jsp">成績登録</a>
+        <a href="<%= request.getContextPath() %>/action/gradeinsert">成績登録</a>
       </li>
       <li style="margin-bottom: 15px;">
         <a href="<%= request.getContextPath() %>/seiseki/seiseki_search.jsp">成績参照</a>
@@ -25,7 +25,7 @@
     </ul>
     <ul class="card subject">
       <li style="margin-bottom: 15px;">
-        <a href="<%= request.getContextPath() %>/kamoku/kamoku_list.jsp">科目管理</a>
+        <a href="<%= request.getContextPath() %>/action/kamoku_list">科目管理</a>
       </li>
     </ul>
    </div>

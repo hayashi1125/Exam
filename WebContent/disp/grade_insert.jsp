@@ -17,19 +17,24 @@
 }
 .select-group {
   display: flex;
-  flex-direction: column;
-  min-width: 120px;
+  align-items: center;  /* ラベルとセレクトの高さを揃える */
+  gap: 8px;
+  min-width: 160px;
 }
+
 .select-group label {
-  margin-bottom: 5px;
+  margin: 0;
   font-weight: bold;
+  white-space: nowrap; /* ラベルが折り返されないようにする */
 }
+
 .select-group select {
   padding: 5px;
   font-size: 14px;
   border-radius: 5px;
   border: 1px solid #ccc;
 }
+
 .button-group {
   margin-top: 10px;
 }

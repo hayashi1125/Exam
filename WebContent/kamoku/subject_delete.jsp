@@ -5,7 +5,7 @@
 <div class="content">
   <h2 class="menu-title">科目情報削除</h2>
 
-  <p>「<strong>${subject.name}(${subject.cd})</strong>」を削除してもよろしいですか</p>
+  <p>「選択した科目」を削除してもよろしいですか</p>  <!-- 「<strong>${subject.name}(${subject.cd})</strong>」 -->
 
   <form action="<%= request.getContextPath() %>/action/subjectdelete" method="post">
     <input type="hidden" name="cd" value="${subject.cd}">

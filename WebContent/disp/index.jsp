@@ -20,7 +20,7 @@
         <a href="<%= request.getContextPath() %>/action/gradeinsert">成績登録</a>
       </li>
       <li style="margin-bottom: 15px;">
-        <a href="<%= request.getContextPath() %>/seiseki/seiseki_search.jsp">成績参照</a>
+        <a href="<%= request.getContextPath() %>/action/grade">成績参照</a>
       </li>
     </ul>
     <ul class="card subject">

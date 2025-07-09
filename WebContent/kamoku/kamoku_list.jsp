@@ -86,10 +86,10 @@
           <td>${subject.cd}</td>
           <td>${subject.name}</td>
           <td>
-            <a href="<%= request.getContextPath() %>/kamoku/subjectupdate.jsp?cd=${subject.cd}">変更</a>
+            <a href="<%= request.getContextPath() %>/kamoku/subjectupdate.jsp?cd=${subject.cd}&name=${subject.name}">変更</a>
           </td>
           <td>
-            <a href="<%= request.getContextPath() %>/kamoku/subject_delete.jsp?cd=${subject.cd}">削除</a>
+            <a href="<%= request.getContextPath() %>/kamoku/subject_delete.jsp?cd=${subject.cd}&name=${subject.name}">削除</a>
           </td>
         </tr>
       </c:forEach>

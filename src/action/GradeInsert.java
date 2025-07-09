@@ -57,6 +57,7 @@ public class GradeInsert extends HttpServlet {
     String selectedClass = request.getParameter("class_no");
     String selectedSubject = request.getParameter("subject");
     String selectedExamRound = request.getParameter("exam_round");
+    String search = request.getParameter("search"); // 検索ボタンのパラメータ
 
     try {
       DAO dao = new DAO();
@@ -115,15 +116,32 @@ public class GradeInsert extends HttpServlet {
           }
         }
 
-        // ▼ 学生リストの取得（絞り込み条件あり）
-        if (selectedYear != null && selectedClass != null &&
-            !selectedYear.isEmpty() && !selectedClass.isEmpty()) {
+        // ▼ 検索ボタンが押されている場合のみ学生を取得
+        if (search != null) {
 
-          try (PreparedStatement st = con.prepareStatement(
-              "SELECT no, name, class_num FROM STUDENT WHERE school_cd = ? or ent_year = ? or class_num = ? or is_attend = true ORDER BY no")) {
-            st.setString(1, schoolCd);
-            st.setInt(2, Integer.parseInt(selectedYear));
-            st.setString(3, selectedClass);
+          // ▼ 学生リストの取得（条件によってSQLを変更）
+          StringBuilder sql = new StringBuilder(
+              "SELECT no, name, class_num FROM STUDENT WHERE school_cd = ? AND is_attend = true");
+
+          if (selectedYear != null && !selectedYear.isEmpty()) {
+            sql.append(" AND ent_year = ?");
+          }
+          if (selectedClass != null && !selectedClass.isEmpty()) {
+            sql.append(" AND class_num = ?");
+          }
+
+          sql.append(" ORDER BY no");
+
+          try (PreparedStatement st = con.prepareStatement(sql.toString())) {
+            int index = 1;
+            st.setString(index++, schoolCd);
+            if (selectedYear != null && !selectedYear.isEmpty()) {
+              st.setInt(index++, Integer.parseInt(selectedYear));
+            }
+            if (selectedClass != null && !selectedClass.isEmpty()) {
+              st.setString(index++, selectedClass);
+            }
+
             try (ResultSet rs = st.executeQuery()) {
               while (rs.next()) {
                 Student s = new Student();
@@ -202,10 +220,23 @@ public class GradeInsert extends HttpServlet {
 
     // ▼ パラメータ取得
     String schoolCd = teacher.getSchool_cd();
-    String subjectName = request.getParameter("subject");
-    int examRound = Integer.parseInt(request.getParameter("exam_round"));
-    String classNum = request.getParameter("class_no");
 
+    // ▼ 空文字チェック(科目)
+    String subjectName = request.getParameter("subject");
+    if (subjectName == null || subjectName.trim().isEmpty()) {
+      throw new ServletException("科目が未選択です。");
+    }
+
+    // ▼ 空文字チェック(回数)
+    String examRoundStr = request.getParameter("exam_round");
+    int examRound = 0;
+    if (examRoundStr != null && !examRoundStr.trim().isEmpty()) {
+      examRound = Integer.parseInt(examRoundStr);
+    } else {
+      throw new ServletException("試験回数が未入力です。");
+    }
+
+    String classNum = request.getParameter("class_no");
     String message = "";
 
     try {
@@ -237,7 +268,14 @@ public class GradeInsert extends HttpServlet {
           String param = e.nextElement();
           if (param.startsWith("point_")) {
             String studentNo = param.substring(6);
-            int point = Integer.parseInt(request.getParameter(param));
+            String pointStr = request.getParameter(param);
+
+            // ▼ 空文字チェック（未入力の場合はスキップ）
+            if (pointStr == null || pointStr.trim().isEmpty()) {
+              continue;
+            }
+
+            int point = Integer.parseInt(pointStr);
 
             // ▼ 既存データの有無を確認
             boolean exists = false;
@@ -284,7 +322,8 @@ public class GradeInsert extends HttpServlet {
         }
 
         // ▼ メッセージ生成
-        message = String.format("登録が完了しました。", insertCount, updateCount);
+        message = String.format("登録が完了しました。");
+
       }
 
     } catch (Exception e) {

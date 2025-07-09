@@ -9,12 +9,12 @@
   <form action="<%= request.getContextPath() %>/action/subjectupdate" method="post">
 
     <label>科目コード</label><br>
-    <div>${subject.cd}</div>
-    <input type="hidden" name="cd" value="${subject.cd}" required placeholder="科目コードを入力してください">
-    <br><br>
+    <div>${param.cd}</div>
+    <input type="hidden" name="cd" value="${param.cd}" required placeholder="科目コードを入力してください">
+    <br>
 
     <label for="name">科目</label><br>
-    <input type="text" id="name" name="name" value="${subject.name}" maxlength="30" required placeholder="科目を入力してください"><br><br>
+    <input type="text" id="name" name="name" value="${param.name}" maxlength="30" required placeholder="科目を入力してください"><br><br>
 
     <input type="submit" value="変更">
     <br><br>

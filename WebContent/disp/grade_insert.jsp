@@ -131,7 +131,7 @@ input[type="number"] {
 
     <!-- ▼ 検索ボタン -->
     <div class="button-group">
-      <button type="submit">検索</button>
+      <button type="submit" name="search">検索</button>
     </div>
   </form>
 

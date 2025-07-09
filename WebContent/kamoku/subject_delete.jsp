@@ -8,7 +8,7 @@
   <p>「選択した科目」を削除してもよろしいですか</p>  <!-- 「<strong>${subject.name}(${subject.cd})</strong>」 -->
 
   <form action="<%= request.getContextPath() %>/action/subjectdelete" method="post">
-    <input type="hidden" name="cd" value="${subject.cd}">
+    <input name="cd" value="${param.cd}">
     <input type="submit" value="削除する">
   </form>
 

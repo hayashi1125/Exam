@@ -73,7 +73,7 @@ public class Grade extends HttpServlet {
                     (studentNo == null || studentNo.isEmpty())) {
 
                     request.setAttribute("results", results);
-                    RequestDispatcher rd = request.getRequestDispatcher("/disp/grade.jsp");
+                    RequestDispatcher rd = request.getRequestDispatcher("/disp/grade_list.jsp");
                     rd.forward(request, response);
                     return;
                 }
@@ -146,7 +146,7 @@ public class Grade extends HttpServlet {
         }
 
         request.setAttribute("results", results);
-        RequestDispatcher rd = request.getRequestDispatcher("/disp/grade.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("/disp/grade_list.jsp");
         rd.forward(request, response);
     }
 

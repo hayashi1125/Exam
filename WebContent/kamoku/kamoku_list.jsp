@@ -86,10 +86,21 @@
           <td>${subject.cd}</td>
           <td>${subject.name}</td>
           <td>
-            <a href="<%= request.getContextPath() %>/kamoku/subjectupdate.jsp?cd=${subject.cd}&name=${subject.name}">変更</a>
+          <c:url var="updateUrl" value="/kamoku/subjectupdate.jsp">
+            <c:param name="cd" value="${subject.cd}" />
+            <c:param name="name" value="${subject.name}" />
+          </c:url>
+
+          <a href="${updateUrl}">変更</a>
+
           </td>
           <td>
-            <a href="<%= request.getContextPath() %>/kamoku/subject_delete.jsp?cd=${subject.cd}&name=${subject.name}">削除</a>
+            <c:url var="deleteUrl" value="/kamoku/subject_delete.jsp">
+            <c:param name="cd" value="${subject.cd}" />
+            <c:param name="name" value="${subject.name}" />
+          </c:url>
+
+          <a href="${deleteUrl}">削除</a>
           </td>
         </tr>
       </c:forEach>

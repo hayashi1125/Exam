@@ -13,13 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 import bean.Grade;
 import dao.GradeDAO;
 
-@WebServlet("/action/gradelist") // ★このURLでServletにアクセス可能！
+@WebServlet("/action/gradelist")
 public class GradeList extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doPost(request, response); // GETはPOSTに委譲
+        doPost(request, response);
     }
 
     @Override
@@ -28,26 +28,49 @@ public class GradeList extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
-        // ▼ 検索条件の取得（null・空文字も考慮）
         String entYear   = request.getParameter("entYear");
-        String className = request.getParameter("className");
+        String classNum = request.getParameter("classNum");
         String subject   = request.getParameter("subject");
-        String studentId = request.getParameter("studentId");
+        String studentId = request.getParameter("studentId");  // 追加
+        String searchType = request.getParameter("searchType");
 
         try {
-            // ▼ DAO呼び出し
             GradeDAO dao = new GradeDAO();
-            List<Grade> gradeList = dao.searchGrades(entYear, className, subject, studentId);
+            List<Grade> gradeList = null;
 
-            // ▼ JSPへ渡す
+            if ("subject".equals(searchType)) {
+                // 科目情報検索
+                if (entYear != null && !entYear.isEmpty()
+                        && classNum != null && !classNum.isEmpty()
+                        && subject != null && !subject.isEmpty()) {
+                    gradeList = dao.findBySubject(entYear, classNum, subject);
+                } else {
+                    gradeList = null;  // 入力不足時はnull（JSPでエラー表示）
+                }
+            } else if ("student".equals(searchType)) {
+                // 学生番号検索
+                if (studentId != null && !studentId.isEmpty()) {
+                    gradeList = dao.findByStudentId(studentId);
+                } else {
+                    gradeList = null;
+                }
+            }
+
+            request.setAttribute("entYear", entYear);
+            request.setAttribute("classNum", classNum);
+            request.setAttribute("subject", subject);
+            request.setAttribute("studentId", studentId);
+            request.setAttribute("entYears", dao.getEntYears());
+            request.setAttribute("searchType", searchType);
             request.setAttribute("gradeList", gradeList);
+            request.setAttribute("classNums", dao.getClassNums());
+            request.setAttribute("subjects", dao.getSubjects());
 
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "検索中にエラーが発生しました：" + e.getMessage());
         }
 
-        // ▼ JSPへフォワード
         RequestDispatcher rd = request.getRequestDispatcher("/disp/grade_list.jsp");
         rd.forward(request, response);
     }

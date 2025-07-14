@@ -1,63 +1,135 @@
 package dao;
 
-// ▼ 必要なライブラリのインポート
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import bean.Grade;  // ▼ 成績情報を格納するBean
+import bean.Grade;
 
 public class GradeDAO extends DAO {
 
-    /**
-     * 成績データを検索するメソッド
-     * @param year 入学年度
-     * @param name クラス名
-     * @param subject 科目名
-     * @param examNo 試験回数
-     * @return 該当する成績のリスト
-     */
-    public List<Grade> searchGrades(String year, String name, String subject, String examNo) throws Exception {
-        List<Grade> list = new ArrayList<>();  // 成績のリストを初期化
-        Connection con = getConnection();      // DB接続取得
+    // 科目情報で成績検索
+    public List<Grade> findBySubject(String entYear, String classNum, String subjectName) throws Exception {
+        List<Grade> list = new ArrayList<>();
+        Connection con = getConnection();
 
-        // ▼ ベースとなるSQL文（WHERE 1=1 を使うことで条件を動的に追加可能）
-        String sql = "SELECT * FROM grades WHERE 1=1";
-        if (year != null && !year.isEmpty()) sql += " AND admission_year = ?";
-        if (name != null && !name.isEmpty()) sql += " AND class = ?";
-        if (subject != null && !subject.isEmpty()) sql += " AND subject = ?";
-        if (examNo != null && !examNo.isEmpty()) sql += " AND exam_no = ?";
+        String sql = "SELECT s.NO AS student_id, s.NAME AS student_name, sub.NAME AS subject, " +
+                     "t.NO AS exam_no, t.POINT AS score " +
+                     "FROM STUDENT s " +
+                     "JOIN TEST t ON s.NO = t.STUDENT_NO " +
+                     "JOIN SUBJECT sub ON t.SUBJECT_CD = sub.CD AND t.SCHOOL_CD = sub.SCHOOL_CD " +
+                     "WHERE s.ENT_YEAR = ? AND s.CLASS_NUM = ? AND sub.NAME = ?";
 
-        // ▼ SQL文を準備
         PreparedStatement st = con.prepareStatement(sql);
+        st.setString(1, entYear);
+        st.setString(2, classNum);
+        st.setString(3, subjectName);
 
-        // ▼ 条件に応じてパラメータを設定
-        int index = 1;
-        if (year != null && !year.isEmpty()) st.setString(index++, year);
-        if (name != null && !name.isEmpty()) st.setString(index++, name);
-        if (subject != null && !subject.isEmpty()) st.setString(index++, subject);
-        if (examNo != null && !examNo.isEmpty()) st.setString(index++, examNo);
-
-        // ▼ SQLを実行し、結果を取得
         ResultSet rs = st.executeQuery();
-
-        // ▼ 結果セットからGradeオブジェクトにデータを詰める
         while (rs.next()) {
-            Grade g = new Grade();  // 成績インスタンス作成
-            g.setStudentId(rs.getString("student_id"));       // 学生番号
-            g.setStudentName(rs.getString("student_name"));   // 氏名
-            g.setScore(rs.getInt("score"));                   // 得点
-            g.setSubject(rs.getString("subject"));            // 科目
-            g.setExamNo(rs.getInt("exam_no"));                // 試験回
-            list.add(g);  // リストに追加
+            Grade g = new Grade();
+            g.setStudentId(rs.getString("student_id"));
+            g.setStudentName(rs.getString("student_name"));
+            g.setSubject(rs.getString("subject"));
+            g.setExamNo(rs.getInt("exam_no"));
+            g.setScore(rs.getInt("score"));
+            list.add(g);
         }
 
-        // ▼ 使用後はリソースを閉じる
+        rs.close();
         st.close();
         con.close();
+        return list;
+    }
 
-        return list;  // 成績一覧を返す
+    // 学生番号で成績検索
+    public List<Grade> findByStudentId(String studentId) throws Exception {
+        List<Grade> list = new ArrayList<>();
+        Connection con = getConnection();
+
+        String sql = "SELECT s.NO AS student_id, s.NAME AS student_name, sub.NAME AS subject, " +
+                     "t.NO AS exam_no, t.POINT AS score " +
+                     "FROM STUDENT s " +
+                     "JOIN TEST t ON s.NO = t.STUDENT_NO " +
+                     "JOIN SUBJECT sub ON t.SUBJECT_CD = sub.CD AND t.SCHOOL_CD = sub.SCHOOL_CD " +
+                     "WHERE s.NO = ?";
+
+        PreparedStatement st = con.prepareStatement(sql);
+        st.setString(1, studentId);
+
+        ResultSet rs = st.executeQuery();
+        while (rs.next()) {
+            Grade g = new Grade();
+            g.setStudentId(rs.getString("student_id"));
+            g.setStudentName(rs.getString("student_name"));
+            g.setSubject(rs.getString("subject"));
+            g.setExamNo(rs.getInt("exam_no"));
+            g.setScore(rs.getInt("score"));
+            list.add(g);
+        }
+
+        rs.close();
+        st.close();
+        con.close();
+        return list;
+    }
+
+    // 入学年度一覧を取得
+    public List<String> getEntYears() throws Exception {
+        List<String> list = new ArrayList<>();
+        Connection con = getConnection();
+
+        String sql = "SELECT DISTINCT ENT_YEAR FROM STUDENT ORDER BY ENT_YEAR DESC";
+        PreparedStatement st = con.prepareStatement(sql);
+        ResultSet rs = st.executeQuery();
+
+        while (rs.next()) {
+            list.add(rs.getString("ENT_YEAR"));
+        }
+
+        rs.close();
+        st.close();
+        con.close();
+        return list;
+    }
+
+    // クラス一覧を取得
+    public List<String> getClassNums() throws Exception {
+        List<String> list = new ArrayList<>();
+        Connection con = getConnection();
+
+        String sql = "SELECT DISTINCT CLASS_NUM FROM STUDENT ORDER BY CLASS_NUM";
+        PreparedStatement st = con.prepareStatement(sql);
+        ResultSet rs = st.executeQuery();
+
+        while (rs.next()) {
+            list.add(rs.getString("CLASS_NUM"));
+        }
+
+        rs.close();
+        st.close();
+        con.close();
+        return list;
+    }
+
+    // 科目一覧を取得
+    public List<String> getSubjects() throws Exception {
+        List<String> list = new ArrayList<>();
+        Connection con = getConnection();
+
+        String sql = "SELECT DISTINCT NAME FROM SUBJECT ORDER BY NAME";
+        PreparedStatement st = con.prepareStatement(sql);
+        ResultSet rs = st.executeQuery();
+
+        while (rs.next()) {
+            list.add(rs.getString("NAME"));
+        }
+
+        rs.close();
+        st.close();
+        con.close();
+        return list;
     }
 }

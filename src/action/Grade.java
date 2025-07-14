@@ -180,6 +180,21 @@ public class Grade extends HttpServlet {
         return list;
     }
 
+ // ▼ 科目取得
+    private List<String> getSubject(Connection con, String schoolCd) throws Exception {
+        List<String> list = new ArrayList<>();
+        try (PreparedStatement ps = con.prepareStatement(
+            "SELECT DISTINCT subject FROM SUBJECT WHERE school_cd = ? ORDER BY subject")) {
+            ps.setString(1, schoolCd);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(rs.getString("subject"));
+                }
+            }
+        }
+        return list;
+    }
+
     // ▼ 科目名取得
     private List<String> getSubjects(Connection con, String schoolCd) throws Exception {
         List<String> list = new ArrayList<>();

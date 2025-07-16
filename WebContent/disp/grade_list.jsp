@@ -4,12 +4,14 @@
 <%@include file="menu.jsp" %>
 
 <style>
+  /* ▼ コンテンツ全体の中央揃え */
   .content-wrapper {
     display: flex;
     justify-content: center;
     margin-top: 30px;
   }
 
+  /* ▼ フォーム全体の白背景＋枠デザイン */
   .search-panel {
     background-color: white;
     border-radius: 10px;
@@ -18,6 +20,7 @@
     width: 750px;
   }
 
+  /* ▼ 各セクションタイトルの装飾 */
   .section-title {
     font-size: 20px;
     font-weight: bold;
@@ -26,61 +29,87 @@
     padding-left: 10px;
   }
 
+  /* ▼ 各入力行（入学年度・クラス・科目など）を横並び＆中央揃え */
   .form-row {
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+    justify-content: center;   /* 中央揃え */
     align-items: flex-end;
-    margin-bottom: 15px;
+    gap: 20px;                 /* 各要素の間隔 */
+    margin-bottom: 12px;
   }
 
+  /* ▼ 各入力項目のコンテナ（ラベル＋selectやinput） */
   .form-item {
+    flex: 1 1 130px;           /* 均等幅で最小150px確保 */
+    max-width: 160px;          /* 最大幅を160pxに制限 */
     display: flex;
-    flex-direction: column;
+    flex-direction: column;   /* ラベルと入力を縦並びに */
   }
 
+  /* ▼ ラベルのスタイル */
   .form-item label {
     font-weight: bold;
     margin-bottom: 4px;
   }
 
+  /* ▼ select と input 要素のスタイル（共通） */
   .form-item select,
   .form-item input {
     padding: 5px;
-    width: 160px;
+    width: 100%;              /* form-item の幅いっぱいに広げる */
   }
 
-  .form-item button {
-    padding: 6px 20px;
-    background-color: #666;
-    color: white;
+  /* ▼ 検索ボタンのスタイル */
+  .form-item button,
+  .button-item button {
+    display: inline-block;
     border: none;
-    border-radius: 4px;
+    border-radius: 2px;
+    padding: 5px 8px;
+    margin: 3px;
+    background-color: #add8e6;
+    text-align: center;
+    text-decoration: none;
+    font-size: 12px;
     cursor: pointer;
   }
 
+  /* ▼ ボタンのみの form-item を小さく固定幅に */
+  .button-item {
+    flex: 0 0 auto;
+    width: auto;
+    display: flex;
+    align-items: flex-end;
+    margin-left: 10px;
+  }
+
+  /* ▼ ボタンの hover 効果 */
   .form-item button:hover {
     background-color: #444;
   }
 
+  /* ▼ 補足メッセージの青文字 */
   .info-note {
     color: #007bff;
     font-size: small;
     margin-top: 10px;
   }
 
+  /* ▼ エラーメッセージ（赤文字・太字） */
   .error-message {
     color: red;
     font-weight: bold;
     margin-bottom: 10px;
   }
 
+  /* ▼ 成績テーブルのデザイン */
   table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
   }
 
+  /* ▼ テーブル内セルの装飾 */
   table th, table td {
     border: 1px solid #ccc;
     padding: 8px;
@@ -100,7 +129,7 @@
       </c:if>
 
       <c:if test="${searchType == 'subject' and not (empty entYear or empty classNum or empty subject) and empty gradeList}">
-        <div class="error-message">成績情報が存在しませんでした</div>
+        <div class="error-message">科目情報が存在しませんでした</div>
       </c:if>
 
       <c:if test="${searchType == 'student' and empty gradeList}">
@@ -144,7 +173,7 @@
             </select>
           </div>
 
-          <div class="form-item">
+          <div class="button-item">
             <button type="submit" name="searchType" value="subject">検索</button>
           </div>
         </div>
@@ -156,7 +185,7 @@
             <label>学生番号：</label>
             <input type="text" name="studentId" value="${studentId}" placeholder="学生番号を入力してください">
           </div>
-          <div class="form-item">
+          <div class="button-item">
             <button type="submit" name="searchType" value="student">検索</button>
           </div>
         </div>

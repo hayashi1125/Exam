@@ -125,7 +125,7 @@
 
       <!-- ▼ エラーメッセージ表示 -->
       <c:if test="${searchType == 'subject' and (empty entYear or empty classNum or empty subject)}">
-        <div class="error-message">入学年度とクラスと科目を選択してください</div>
+        <div class="error-message">入学年度とクラスと科目を全て選択してください</div>
       </c:if>
 
       <c:if test="${searchType == 'subject' and not (empty entYear or empty classNum or empty subject) and empty gradeList}">

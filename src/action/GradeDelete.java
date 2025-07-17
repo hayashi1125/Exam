@@ -18,22 +18,31 @@ public class GradeDelete extends HttpServlet {
       throws ServletException, IOException {
 
     request.setCharacterEncoding("UTF-8");
-    String cd = request.getParameter("cd");
+
+    // 成績削除に必要なパラメータを取得
+    String subject = request.getParameter("subject");
+    String examNoStr = request.getParameter("examNo");
     String message;
 
     try {
+      int examNo = Integer.parseInt(examNoStr); // 試験回はint型前提
+
       InitialContext ic = new InitialContext();
       DataSource ds = (DataSource) ic.lookup("java:/comp/env/jdbc/kaihatsu");
       Connection con = ds.getConnection();
 
-      PreparedStatement st = con.prepareStatement("DELETE FROM SUBJECT WHERE cd = ?");
-      st.setString(1, cd);
+      // 成績削除SQL
+      PreparedStatement st = con.prepareStatement(
+        "DELETE FROM student WHERE subject = ? AND exam_no = ?"
+      );
+      st.setString(1, subject);
+      st.setInt(2, examNo);
       int rows = st.executeUpdate();
 
       st.close();
       con.close();
 
-      message = (rows > 0) ? "削除が完了しました。" : "削除に失敗しました。";
+      message = (rows > 0) ? "削除が完了しました。" : "削除対象の成績が見つかりませんでした。";
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -41,6 +50,6 @@ public class GradeDelete extends HttpServlet {
     }
 
     request.setAttribute("message", message);
-    request.getRequestDispatcher("/kamoku/subject_deleteresult.jsp").forward(request, response);
+    request.getRequestDispatcher("/disp/grade_deleteresult.jsp").forward(request, response);
   }
 }

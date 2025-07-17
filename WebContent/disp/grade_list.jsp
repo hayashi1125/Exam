@@ -206,6 +206,7 @@
             <th>科目</th>
             <th>試験回</th>
             <th>点数</th>
+            <th>操作</th>
           </tr>
           <c:forEach var="g" items="${gradeList}">
             <tr>
@@ -214,6 +215,13 @@
               <td>${g.subject}</td>
               <td>${g.examNo}</td>
               <td>${g.score}</td>
+              <td>
+			  <c:url var="deleteUrl" value="/disp/grade_delete.jsp">
+			    <c:param name="subject" value="${g.subject}" />
+			    <c:param name="examNo" value="${g.examNo}" />
+			  </c:url>
+			  <a href="${deleteUrl}" style="color: red;">削除</a>
+			</td>
             </tr>
           </c:forEach>
         </table>

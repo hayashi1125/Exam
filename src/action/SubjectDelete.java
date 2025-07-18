@@ -41,6 +41,6 @@ public class SubjectDelete extends HttpServlet {
     }
 
     request.setAttribute("message", message);
-    request.getRequestDispatcher("/disp/grade_deleteresult.jsp").forward(request, response);
+    request.getRequestDispatcher("/kamoku/subject_deleteresult.jsp").forward(request, response);
   }
 }

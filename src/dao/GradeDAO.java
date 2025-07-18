@@ -132,4 +132,36 @@ public class GradeDAO extends DAO {
         con.close();
         return list;
     }
+
+    // 全成績を取得
+    public List<Grade> findAll() throws Exception {
+        List<Grade> list = new ArrayList<>();
+        Connection con = getConnection();
+
+        String sql = "SELECT s.NO AS student_id, s.NAME AS student_name, sub.NAME AS subject, " +
+                     "t.NO AS exam_no, t.POINT AS score " +
+                     "FROM STUDENT s " +
+                     "JOIN TEST t ON s.NO = t.STUDENT_NO " +
+                     "JOIN SUBJECT sub ON t.SUBJECT_CD = sub.CD AND t.SCHOOL_CD = sub.SCHOOL_CD " +
+                     "ORDER BY s.NO, sub.NAME, t.NO";
+
+        PreparedStatement st = con.prepareStatement(sql);
+        ResultSet rs = st.executeQuery();
+
+        while (rs.next()) {
+            Grade g = new Grade();
+            g.setStudentId(rs.getString("student_id"));
+            g.setStudentName(rs.getString("student_name"));
+            g.setSubject(rs.getString("subject"));
+            g.setExamNo(rs.getInt("exam_no"));
+            g.setScore(rs.getInt("score"));
+            list.add(g);
+        }
+
+        rs.close();
+        st.close();
+        con.close();
+        return list;
+    }
 }
+

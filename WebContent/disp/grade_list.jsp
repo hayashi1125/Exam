@@ -4,14 +4,12 @@
 <%@include file="menu.jsp" %>
 
 <style>
-  /* ▼ コンテンツ全体の中央揃え */
   .content-wrapper {
     display: flex;
     justify-content: center;
     margin-top: 30px;
   }
 
-  /* ▼ フォーム全体の白背景＋枠デザイン */
   .search-panel {
     background-color: white;
     border-radius: 10px;
@@ -20,7 +18,6 @@
     width: 750px;
   }
 
-  /* ▼ 各セクションタイトルの装飾 */
   .section-title {
     font-size: 20px;
     font-weight: bold;
@@ -29,37 +26,32 @@
     padding-left: 10px;
   }
 
-  /* ▼ 各入力行（入学年度・クラス・科目など）を横並び＆中央揃え */
   .form-row {
     display: flex;
-    justify-content: center;   /* 中央揃え */
+    justify-content: center;
     align-items: flex-end;
-    gap: 20px;                 /* 各要素の間隔 */
+    gap: 20px;
     margin-bottom: 12px;
   }
 
-  /* ▼ 各入力項目のコンテナ（ラベル＋selectやinput） */
   .form-item {
-    flex: 1 1 130px;           /* 均等幅で最小150px確保 */
-    max-width: 160px;          /* 最大幅を160pxに制限 */
+    flex: 1 1 130px;
+    max-width: 160px;
     display: flex;
-    flex-direction: column;   /* ラベルと入力を縦並びに */
+    flex-direction: column;
   }
 
-  /* ▼ ラベルのスタイル */
   .form-item label {
     font-weight: bold;
     margin-bottom: 4px;
   }
 
-  /* ▼ select と input 要素のスタイル（共通） */
   .form-item select,
   .form-item input {
     padding: 5px;
-    width: 100%;              /* form-item の幅いっぱいに広げる */
+    width: 100%;
   }
 
-  /* ▼ 検索ボタンのスタイル */
   .form-item button,
   .button-item button {
     display: inline-block;
@@ -69,12 +61,10 @@
     margin: 3px;
     background-color: #add8e6;
     text-align: center;
-    text-decoration: none;
     font-size: 12px;
     cursor: pointer;
   }
 
-  /* ▼ ボタンのみの form-item を小さく固定幅に */
   .button-item {
     flex: 0 0 auto;
     width: auto;
@@ -83,37 +73,38 @@
     margin-left: 10px;
   }
 
-  /* ▼ ボタンの hover 効果 */
-  .form-item button:hover {
+  .form-item button:hover,
+  .button-item button:hover {
     background-color: #444;
+    color: white;
   }
 
-  /* ▼ 補足メッセージの青文字 */
   .info-note {
     color: #007bff;
     font-size: small;
     margin-top: 10px;
   }
 
-  /* ▼ エラーメッセージ（赤文字・太字） */
   .error-message {
     color: red;
     font-weight: bold;
     margin-bottom: 10px;
   }
 
-  /* ▼ 成績テーブルのデザイン */
   table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
   }
 
-  /* ▼ テーブル内セルの装飾 */
   table th, table td {
     border: 1px solid #ccc;
     padding: 8px;
     text-align: center;
+  }
+
+  .all-button {
+    background-color: #90ee90;
   }
 </style>
 
@@ -123,7 +114,7 @@
   <div class="content-wrapper">
     <div class="search-panel">
 
-      <!-- ▼ エラーメッセージ表示 -->
+      <!-- ▼ エラーメッセージ -->
       <c:if test="${searchType == 'subject' and (empty entYear or empty classNum or empty subject)}">
         <div class="error-message">入学年度とクラスと科目を全て選択してください</div>
       </c:if>
@@ -190,15 +181,23 @@
           </div>
         </div>
 
+        <!-- ▼ 全件表示 -->
+        <div class="section-title">その他</div>
+        <div class="form-row">
+          <div class="button-item">
+            <button type="submit" class="all-button" name="searchType" value="all">全件表示</button>
+          </div>
+        </div>
+
         <!-- ▼ 補足 -->
         <div class="info-note">
-          科目情報を選択または学生情報を入力して検索ボタンをクリックしてください
+          科目情報を選択、学生番号を入力、または「全件表示」をクリックしてください。
         </div>
       </form>
 
       <!-- ▼ 成績結果表示 -->
       <c:if test="${not empty gradeList}">
-        <h3 style="margin-top: 20px;">成績一覧（科目）</h3>
+        <h3 style="margin-top: 20px;">成績一覧</h3>
         <table>
           <tr>
             <th>学生番号</th>
@@ -206,7 +205,6 @@
             <th>科目</th>
             <th>試験回</th>
             <th>点数</th>
-            <th>操作</th>
           </tr>
           <c:forEach var="g" items="${gradeList}">
             <tr>
@@ -215,20 +213,14 @@
               <td>${g.subject}</td>
               <td>${g.examNo}</td>
               <td>${g.score}</td>
-              <td>
-			  <c:url var="deleteUrl" value="/disp/grade_delete.jsp">
-			    <c:param name="subject" value="${g.subject}" />
-			    <c:param name="examNo" value="${g.examNo}" />
-			  </c:url>
-			  <a href="${deleteUrl}" style="color: red;">削除</a>
-			</td>
             </tr>
           </c:forEach>
         </table>
       </c:if>
+
       <c:if test="${searchType != null and empty gradeList}">
-  <p class="info-note">検索条件に一致する成績が見つかりませんでした。</p>
-</c:if>
+        <p class="info-note">検索条件に一致する成績が見つかりませんでした。</p>
+      </c:if>
 
     </div>
   </div>

@@ -29,9 +29,9 @@ public class GradeList extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         String entYear   = request.getParameter("entYear");
-        String classNum = request.getParameter("classNum");
+        String classNum  = request.getParameter("classNum");
         String subject   = request.getParameter("subject");
-        String studentId = request.getParameter("studentId");  // 追加
+        String studentId = request.getParameter("studentId");
         String searchType = request.getParameter("searchType");
 
         try {
@@ -45,7 +45,7 @@ public class GradeList extends HttpServlet {
                         && subject != null && !subject.isEmpty()) {
                     gradeList = dao.findBySubject(entYear, classNum, subject);
                 } else {
-                    gradeList = null;  // 入力不足時はnull（JSPでエラー表示）
+                    gradeList = null;
                 }
             } else if ("student".equals(searchType)) {
                 // 学生番号検索
@@ -54,15 +54,19 @@ public class GradeList extends HttpServlet {
                 } else {
                     gradeList = null;
                 }
+            } else if ("all".equals(searchType)) {
+                // 全件表示
+                gradeList = dao.findAll();
             }
 
+            // 選択リストおよび検索結果をセット
             request.setAttribute("entYear", entYear);
             request.setAttribute("classNum", classNum);
             request.setAttribute("subject", subject);
             request.setAttribute("studentId", studentId);
-            request.setAttribute("entYears", dao.getEntYears());
             request.setAttribute("searchType", searchType);
             request.setAttribute("gradeList", gradeList);
+            request.setAttribute("entYears", dao.getEntYears());
             request.setAttribute("classNums", dao.getClassNums());
             request.setAttribute("subjects", dao.getSubjects());
 
